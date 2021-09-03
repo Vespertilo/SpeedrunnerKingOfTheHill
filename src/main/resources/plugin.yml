@@ -1,0 +1,24 @@
+name: ManhuntKotH
+version: ${project.version}
+main: me.specnr.manhuntkoth.Manhunt
+api-version: 1.16
+authors: [ Specnr ]
+description: Minecraft Manhunt x King of the Hill
+website: https://www.youtube.com/channel/UC29rrADVV0zeMX8gR8xtisw
+commands:
+  manhunt-r:
+    description: Starts a Manhunt game with random runner
+  manhunt-quickstart:
+    aliases: quickstart
+    description: QuickStarts a Manhunt Game with given runner(s)
+  manhunt-reset:
+    description: Resets the current runners/hunters
+  runners:
+    description: Displays the current runners
+  runner:
+    aliases: manhunt-runner
+    description: Adds a runner
+  hunter:
+    aliases: manhunt-hunter
+    description: Adds a hunter
+
