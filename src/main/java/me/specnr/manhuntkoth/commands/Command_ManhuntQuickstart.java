@@ -2,6 +2,7 @@ package me.specnr.manhuntkoth.commands;
 
 import me.specnr.manhuntkoth.helpers.BroadcastHelper;
 import me.specnr.manhuntkoth.helpers.HunterHelper;
+import me.specnr.manhuntkoth.helpers.PregameHelper;
 import me.specnr.manhuntkoth.helpers.StringHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,14 +30,20 @@ public class Command_ManhuntQuickstart implements CommandExecutor {
                 runners.add(curr);
             }
             HunterHelper.Runners.clear();
+            HunterHelper.Hunters.clear();
             for (Player p : runners) {
                 HunterHelper.addRunner(p.getUniqueId());
+            }
+            for(Player p:Bukkit.getOnlinePlayers()) {
+                if(!HunterHelper.Runners.contains(p.getUniqueId())) {
+                    HunterHelper.addHunter(p.getUniqueId());
+                }
             }
         } else {
             sender.sendMessage(StringHelper.colorize(BroadcastHelper.BroadcastPrefix + " &cError: Must provide at least 1 name"));
             return false;
         }
-        BroadcastHelper.Broadcast(StringHelper.colorize("&aMinecraft manhunt round started!"));
+        PregameHelper.startRound(30);
         BroadcastHelper.BroadcastRunners();
         HunterHelper.giveAllHuntersACompass();
         return true;

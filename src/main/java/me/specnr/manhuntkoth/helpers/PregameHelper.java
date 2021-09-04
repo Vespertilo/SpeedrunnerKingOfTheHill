@@ -13,10 +13,11 @@ import java.util.UUID;
 
 public class PregameHelper {
     public static boolean roundActive = false;
+
     public static void startRound(int headstart) {
-        for(UUID uuid:HunterHelper.Runners) {
+        for (UUID uuid : HunterHelper.Runners) {
             Player curr = Bukkit.getPlayer(uuid);
-            if(curr==null) {
+            if (curr == null) {
                 HunterHelper.removeRunner(uuid);
                 BroadcastHelper.Broadcast("&cA runner was removed because they were offline!");
                 return;
@@ -26,31 +27,48 @@ public class PregameHelper {
         new BukkitRunnable() {
             int i = headstart;
             int tick = 1;
+
             @Override
             public void run() {
-                if(i<=0) {
+                if (i <= 0) {
                     this.cancel();
                 }
-                for(UUID uuid:HunterHelper.Hunters) {
+                for (UUID uuid : HunterHelper.Hunters) {
                     Player curr = Bukkit.getPlayer(uuid);
-                    if(curr==null) {
+                    if (curr == null) {
                         HunterHelper.Hunters.remove(uuid);
                         BroadcastHelper.Broadcast("&cA hunter was removed because they were offline!");
                     } else {
-                        if(i==0) {
-                            curr.sendTitle(StringHelper.colorize("&aGO!"),"",1,20,1);
-                            BroadcastHelper.Broadcast("&cThe hunters have been released!");
-                            curr.playSound(curr.getLocation(), Sound.ENTITY_WITHER_SPAWN,1,1);
-                            roundActive = true;
-                        } else {
-                            curr.sendTitle(StringHelper.colorize("&a" + i),"",1,20,1);
-                            curr.playSound(curr.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING,1,1);
-                            curr.teleport(curr.getWorld().getSpawnLocation());
-                            curr.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS,2,1,false,false));
+                        curr.teleport(curr.getWorld().getSpawnLocation());
+                        if (tick >= 20) {
+                            curr.sendTitle(StringHelper.colorize("&a" + i), "", 1, 20, 1);
+                            curr.playSound(curr.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                            curr.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false));
+                            if(i<=3) {
+                                for(UUID uid:HunterHelper.Runners) {
+                                    Player p = Bukkit.getPlayer(uid);
+                                    assert p != null;
+                                    p.sendTitle(StringHelper.colorize("&a" + i), "", 1, 20, 1);
+                                    p.playSound(curr.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                                }
+                            }
+                            if (i == 0) {
+                                curr.sendTitle(StringHelper.colorize("&aGO!"), "", 1, 20, 1);
+                                BroadcastHelper.Broadcast("&cThe hunters have been released!");
+                                curr.playSound(curr.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1, 1);
+                                for(UUID uuid1:HunterHelper.Runners) {
+                                    Player pl = Bukkit.getPlayer(uuid1);
+                                    pl.sendTitle(StringHelper.colorize("&aGO!"), "", 1, 20, 1);
+                                    BroadcastHelper.Broadcast("&cThe hunters have been released!");
+                                    pl.playSound(curr.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1, 1);
+                                }
+                                roundActive = true;
+                            }
                         }
                     }
+
                 }
-                if(tick>=20) {
+                if (tick >= 20) {
                     i--;
                     tick = 1;
                 } else {
@@ -58,7 +76,7 @@ public class PregameHelper {
                 }
 
             }
-        }.runTaskTimer(Manhunt.getInstance(), 0L,1L);
+        }.runTaskTimer(Manhunt.getInstance(), 0L, 1L);
 
     }
 }

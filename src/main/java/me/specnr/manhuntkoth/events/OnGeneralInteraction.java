@@ -2,6 +2,7 @@ package me.specnr.manhuntkoth.events;
 
 import me.specnr.manhuntkoth.helpers.BroadcastHelper;
 import me.specnr.manhuntkoth.helpers.HunterHelper;
+import me.specnr.manhuntkoth.helpers.PregameHelper;
 import me.specnr.manhuntkoth.helpers.StringHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,8 +19,15 @@ public class OnGeneralInteraction implements Listener {
         if (Bukkit.getOnlinePlayers().size() > 1) {
             Player deadPlayer = evt.getEntity();
             if (HunterHelper.Runners.contains(deadPlayer.getUniqueId())) {
-                evt.setDeathMessage("");
-                BroadcastHelper.Broadcast(StringHelper.colorize("&b&l&o" + deadPlayer + "&r&a died! Runners win!"));
+                if(PregameHelper.roundActive) {
+                    evt.setDeathMessage("");
+                    BroadcastHelper.Broadcast(StringHelper.colorize("&b&l&o" + deadPlayer.getName() + "&r&a died! Hunters win!"));
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        p.getInventory().clear();
+                        p.teleport(p.getWorld().getSpawnLocation());
+                        PregameHelper.roundActive = false;
+                    }
+                }
             }
         }
     }
